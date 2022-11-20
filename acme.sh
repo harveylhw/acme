@@ -184,7 +184,7 @@ acme_standalone(){
             green "建议如下："
             yellow "1. 请确保CloudFlare小云朵为关闭状态(仅限DNS), 其他域名解析或CDN网站设置同理"
             yellow "2. 请检查DNS解析设置的IP是否为VPS的真实IP"
-            yellow "3. 脚本可能跟不上时代, 建议截图发布到GitHub Issues、GitLab Issues、论坛或TG群询问"
+            yellow "3. 脚本可能跟不上时代"
             exit 1
         fi
     fi
@@ -238,13 +238,13 @@ acme_cfapiNTLD(){
     else
         bash ~/.acme.sh/acme.sh --issue --dns dns_cf -d "*.${domain}" -d "${domain}" -k ec-256 --insecure
     fi
-    bash ~/.acme.sh/acme.sh --install-cert -d "*.${domain}" --key-file /root/private.key --fullchain-file /root/cert.crt --ecc
+    bash ~/.acme.sh/acme.sh --install-cert -d "*.${domain}" --key-file /root/key.key --fullchain-file /root/crt.crt --ecc
     checktls
 }
 
 checktls() {
-    if [[ -f /root/cert.crt && -f /root/private.key ]]; then
-        if [[ -s /root/cert.crt && -s /root/private.key ]]; then
+    if [[ -f /root/cert.crt && -f /root/key.key ]]; then
+        if [[ -s /root/cert.crt && -s /root/key.key ]]; then
             if [[ -n $(type -P wg-quick) && -n $(type -P wgcf) ]]; then
                 wg-quick up wgcf >/dev/null 2>&1
             fi
@@ -257,8 +257,8 @@ checktls() {
             sed -i '/--cron/d' /etc/crontab >/dev/null 2>&1
             echo "0 0 * * * root bash /root/.acme.sh/acme.sh --cron -f >/dev/null 2>&1" >> /etc/crontab
             green "证书申请成功! 脚本申请到的证书 (cert.crt) 和私钥 (private.key) 文件已保存到 /root 文件夹下"
-            yellow "证书crt文件路径如下: /root/cert.crt"
-            yellow "私钥key文件路径如下: /root/private.key"
+            yellow "证书crt文件路径如下: /root/crt.crt"
+            yellow "私钥key文件路径如下: /root/key.key"
             back2menu
         else
             if [[ -n $(type -P wg-quick) && -n $(type -P wgcf) ]]; then
@@ -292,7 +292,7 @@ revoke_cert() {
         bash ~/.acme.sh/acme.sh --revoke -d ${domain} --ecc
         bash ~/.acme.sh/acme.sh --remove -d ${domain} --ecc
         rm -rf ~/.acme.sh/${domain}_ecc
-        rm -f /root/cert.crt /root/private.key
+        rm -f /root/crt.crt /root/key.key
         green "撤销${domain}的域名证书成功"
         back2menu
     else
@@ -343,13 +343,8 @@ menu() {
     clear
     echo "#############################################################"
     echo -e "#                   ${RED}Acme  证书一键申请脚本${PLAIN}                  #"
-    echo -e "# ${GREEN}作者${PLAIN}: MisakaNo の 小破站                                  #"
-    echo -e "# ${GREEN}博客${PLAIN}: https://blog.misaka.rest                            #"
-    echo -e "# ${GREEN}GitHub 项目${PLAIN}: https://github.com/blog-misaka               #"
-    echo -e "# ${GREEN}GitLab 项目${PLAIN}: https://gitlab.com/misakablog                #"
-    echo -e "# ${GREEN}Telegram 频道${PLAIN}: https://t.me/misakablogchannel             #"
-    echo -e "# ${GREEN}Telegram 群组${PLAIN}: https://t.me/+CLhpemKhaC8wZGIx             #"
-    echo -e "# ${GREEN}YouTube 频道${PLAIN}: https://www.youtube.com/@misaka-blog        #"
+    echo -e "# ${GREEN}作者${PLAIN}:       Harvey                                    #"
+    echo -e "# ${GREEN}博客${PLAIN}: https://bk.hyblog.ml                            #"    
     echo "#############################################################"
     echo ""
     echo -e " ${GREEN}1.${PLAIN} 安装 Acme.sh 域名证书申请脚本"
