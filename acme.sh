@@ -342,7 +342,7 @@ uninstall() {
 menu() {
     clear
     echo "#############################################################"
-    echo -e "#                   ${RED}Acme  证书一键申请脚本${PLAIN}                  #"
+    echo -e "#                   ${RED}Acme  证书一键申请脚本${PLAIN}               #"
     echo -e "# ${GREEN}作者${PLAIN}:       Harvey                                    #"
     echo -e "# ${GREEN}博客${PLAIN}: https://bk.hyblog.ml                            #"    
     echo "#############################################################"
